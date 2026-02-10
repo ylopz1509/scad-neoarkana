@@ -3,97 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoArkana SCAD - Checklists</title>
+    <title>NeoArkana SCAD - Gestión de Cumplimiento</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 font-sans">
 
-    <header class="bg-emerald-600 text-white py-12 px-6 shadow-lg">
+    <nav class="bg-white border-b border-slate-200 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div>
-                <a href="index.html" class="text-emerald-100 hover:text-white transition-all text-sm uppercase font-bold tracking-widest mb-2 block">
-                    <i class="fas fa-arrow-left mr-2"></i> Volver al Inicio
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-slate-400 hover:text-emerald-600 transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
                 </a>
-                <h1 class="text-4xl font-black tracking-tight uppercase">Checklists <span class="text-emerald-200">Legales</span></h1>
-                <p class="text-emerald-50 opacity-90">Evaluación de cumplimiento normativo (LGPGIR / NOMs)</p>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">Gestión de <span class="text-emerald-600">Checklists</span></h1>
             </div>
-            <div class="hidden md:block text-right">
-                <p class="text-xs uppercase font-bold text-emerald-200">Progreso General</p>
-                <div class="w-48 h-3 bg-emerald-800 rounded-full mt-2 overflow-hidden">
-                    <div class="bg-white h-full w-[65%]"></div>
-                </div>
-                <p class="text-sm mt-1 font-bold text-white">65% Completado</p>
+            <div class="flex gap-2">
+                <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold uppercase">Sesión: Administrador</span>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-6xl mx-auto p-8 -mt-8 relative z-20">
+    <main class="max-w-6xl mx-auto p-6 md:p-8">
         
-        <div class="flex gap-4 mb-8 overflow-x-auto pb-2">
-            <button class="bg-emerald-600 text-white px-6 py-2 rounded-full shadow-md text-sm font-bold whitespace-nowrap">Todos</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Generación</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Almacenamiento</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Transporte</button>
+        <div class="mb-10">
+            <h2 class="text-3xl font-black text-slate-800 uppercase leading-none">Control Normativo</h2>
+            <p class="text-slate-500 mt-2">Selecciona un requisito para actualizar tu estado de cumplimiento ambiental.</p>
         </div>
 
-        <div class="space-y-6">
+        <div class="grid gap-4">
             
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-emerald-500 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-check"></i>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-colors group">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1">
+                            <input type="checkbox" class="w-6 h-6 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">Registro de Microgenerador (SEMARNAT)</h3>
+                            <p class="text-sm text-slate-500">Inscripción oficial ante la autoridad para el manejo de residuos sólidos.</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase">LGPGIR Art. 46</span>
+                                <span class="text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded uppercase">Obligatorio</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Registro como Microgenerador</h3>
-                        <p class="text-slate-500 text-sm mt-1">Obligatorio según la LGPGIR para centros de acopio pequeños.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: LGPGIR Art. 46</span>
+                    <div class="flex items-center gap-3 self-end md:self-center">
+                        <button class="flex items-center gap-2 bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 px-4 py-2 rounded-xl text-sm font-bold transition-all">
+                            <i class="fas fa-upload"></i> Subir Evidencia
+                        </button>
                     </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter">Cumplido</span>
-                    <button class="text-slate-400 hover:text-emerald-600 transition-colors p-2"><i class="fas fa-eye text-xl"></i></button>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-amber-500 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-exclamation"></i>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-colors group">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1">
+                            <input type="checkbox" class="w-6 h-6 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">Plan de Manejo de Residuos Valorizables</h3>
+                            <p class="text-sm text-slate-500">Documento técnico que especifica la ruta y destino final del reciclaje.</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase">NOM-161-SEMARNAT</span>
+                                <span class="text-[10px] font-bold bg-amber-50 text-amber-600 px-2 py-0.5 rounded uppercase">Prioridad Alta</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Plan de Manejo de Residuos</h3>
-                        <p class="text-slate-500 text-sm mt-1">Documento que describe el manejo de residuos valorizables.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: NOM-161-SEMARNAT</span>
+                    <div class="flex items-center gap-3 self-end md:self-center">
+                        <button class="flex items-center gap-2 bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 px-4 py-2 rounded-xl text-sm font-bold transition-all">
+                            <i class="fas fa-upload"></i> Subir Evidencia
+                        </button>
                     </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-amber-100 text-amber-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter">Pendiente</span>
-                    <button class="bg-amber-600 text-white px-6 py-2 rounded-2xl text-sm font-bold hover:bg-amber-700 shadow-lg shadow-amber-200 transition-all">Subir PDF</button>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-slate-300 flex flex-col md:flex-row items-center justify-between gap-6 opacity-60">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-ban"></i>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-colors group">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1">
+                            <input type="checkbox" class="w-6 h-6 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 group-hover:text-emerald-700 transition-colors">Bitácora Mensual de Entradas y Salidas</h3>
+                            <p class="text-sm text-slate-500">Registro diario de los volúmenes de material acopiado y vendido.</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase">Reglamento LGPGIR</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Bitácora de Residuos Peligrosos</h3>
-                        <p class="text-slate-500 text-sm mt-1">Solo requerido si manejas aceites, solventes o químicos.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: NOM-052-SEMARNAT</span>
+                    <div class="flex items-center gap-3 self-end md:self-center">
+                        <button class="flex items-center gap-2 bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-600 px-4 py-2 rounded-xl text-sm font-bold transition-all">
+                            <i class="fas fa-upload"></i> Subir Evidencia
+                        </button>
                     </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-slate-100 text-slate-500 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter italic">No se requiere</span>
                 </div>
             </div>
 
         </div>
 
-        <footer class="mt-20 text-center text-slate-400 text-sm border-t pt-8 pb-10">
-            <p>Datos sincronizados con la base de datos <span class="text-emerald-600 font-mono font-bold">NeoArkana_Cloud</span></p>
+        <div class="fixed bottom-8 right-8">
+            <button class="bg-emerald-600 text-white px-8 py-4 rounded-full shadow-2xl hover:bg-emerald-700 hover:scale-105 transition-all font-bold flex items-center gap-3">
+                <i class="fas fa-save text-xl"></i> Guardar Cambios
+            </button>
         </div>
+
+        <footer class="mt-20 py-10 border-t border-slate-200">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-xs">
+                <p>NeoArkana SCAD - Módulo de Verificación Ambiental v1.0</p>
+                <p class="flex items-center gap-2"><i class="fas fa-shield-halved text-emerald-500"></i> Conexión Segura con Base de Datos MySQL</p>
+            </div>
+        </footer>
+
     </main>
 
 </body>
