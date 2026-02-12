@@ -35,32 +35,39 @@
     <nav class="bg-white border-b border-slate-200 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <a href="index.html" class="text-slate-400 hover:text-emerald-600 transition-colors"><i class="fas fa-arrow-left text-xl"></i></a>
+                <a href="index.html" class="text-slate-400 hover:text-emerald-600 transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </a>
                 <h1 class="text-xl font-bold text-slate-800 tracking-tight">Gestión de <span class="text-emerald-600">Checklists</span></h1>
             </div>
+            <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold uppercase">Módulo Operativo</span>
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto p-6 md:p-8">
+        
         <div class="mb-10">
             <h2 class="text-3xl font-black text-slate-800 uppercase leading-none">Control Normativo</h2>
-            <p class="text-slate-500 mt-2 italic">Haz clic en el nombre de la norma para ver en qué consiste.</p>
+            <p class="text-slate-500 mt-2">Haz clic en las etiquetas para consultar los detalles legales de cada requisito.</p>
         </div>
 
         <div class="grid gap-4">
+            
             <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-start gap-4">
                         <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
                         <div>
                             <h3 class="font-bold text-slate-800">Inscripción al Padrón de Generadores</h3>
-                            <p class="text-sm text-slate-500">Obligación legal para el control de residuos peligrosos.</p>
+                            <p class="text-sm text-slate-500">Obligación legal para el control y reporte de residuos.</p>
                             <button onclick="showInfo('Art46')" class="mt-2 text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded uppercase hover:bg-blue-100 transition-colors">
                                 <i class="fas fa-info-circle mr-1"></i> Ver: Art. 46 (RLGPGIR)
                             </button>
                         </div>
                     </div>
-                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all"><i class="fas fa-upload mr-2"></i>Subir</button>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-upload mr-2"></i>Subir Registro
+                    </button>
                 </div>
             </div>
 
@@ -76,34 +83,103 @@
                             </button>
                         </div>
                     </div>
-                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all"><i class="fas fa-upload mr-2"></i>Subir</button>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-upload mr-2"></i>Subir Plan
+                    </button>
                 </div>
             </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
+                        <div>
+                            <h3 class="font-bold text-slate-800">Bitácora de Operación Mensual</h3>
+                            <p class="text-sm text-slate-500">Registro de volúmenes de acopio y comercialización.</p>
+                            <button onclick="showInfo('Bitacora')" class="mt-2 text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded uppercase hover:bg-indigo-100 transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Ver: Reg. LGPGIR Art. 40
+                            </button>
+                        </div>
+                    </div>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-file-invoice mr-2"></i>Subir PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
+                        <div>
+                            <h3 class="font-bold text-slate-800">Condiciones de Almacenamiento</h3>
+                            <p class="text-sm text-slate-500">Infraestructura, señalización y seguridad en sitio.</p>
+                            <button onclick="showInfo('Seguridad')" class="mt-2 text-[10px] font-bold bg-amber-50 text-amber-600 px-2 py-0.5 rounded uppercase hover:bg-amber-100 transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Ver: Reg. LGPGIR Art. 82
+                            </button>
+                        </div>
+                    </div>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-camera mr-2"></i>Evidencia
+                    </button>
+                </div>
+            </div>
+
         </div>
+
+        <div class="fixed bottom-8 right-8">
+            <button class="bg-emerald-600 text-white px-8 py-4 rounded-full shadow-2xl hover:bg-emerald-700 hover:scale-105 transition-all font-bold flex items-center gap-3">
+                <i class="fas fa-save text-xl"></i> Guardar Cambios
+            </button>
+        </div>
+
+        <footer class="mt-20 py-10 border-t border-slate-200 text-slate-400 text-xs text-center">
+            <p>NeoArkana SCAD - Módulo de Verificación Ambiental v1.0 Alpha</p>
+        </footer>
+
     </main>
 
     <script>
+        // BASE DE DATOS LOCAL DE INFORMACIÓN LEGAL
         const infoData = {
             'NOM161': {
                 title: 'NOM-161-SEMARNAT',
                 content: `
                     <p><strong>¿Qué es?</strong> Clasifica los Residuos de Manejo Especial (RME) como PET, llantas, pilas y electrónicos.</p>
-                    <p><strong>Objetivo:</strong> Reducir, reutilizar y reciclar residuos industriales y comerciales, promoviendo la responsabilidad compartida.</p>
                     <p><strong>Obligación:</strong> Quienes generen más de 10 toneladas al año deben registrar un <strong>Plan de Manejo</strong> que detalle la separación, almacenamiento y disposición final.</p>
-                    <p class="text-xs bg-slate-50 p-2 rounded">PROFEPA se encarga de vigilar que los centros de acopio cumplan con este registro.</p>
+                    <p><strong>Objetivo:</strong> Reducir y reciclar residuos industriales y comerciales, promoviendo la valorización.</p>
+                    <p class="text-xs bg-slate-50 p-2 rounded">La PROFEPA vigila que el centro de acopio tenga este registro vigente.</p>
                 `
             },
             'Art46': {
                 title: 'Artículo 46 (RLGPGIR)',
                 content: `
-                    <p><strong>¿Qué exige?</strong> Obliga a generadores de residuos peligrosos a:</p>
+                    <p><strong>¿Qué exige?</strong> Los generadores deben:</p>
                     <ul class="list-disc ml-4 space-y-1">
                         <li>Identificar y clasificar sus residuos.</li>
-                        <li>Manejarlos y almacenarlos separadamente (no mezclar).</li>
-                        <li>Etiquetar envases con nombre, peligrosidad y fecha.</li>
-                        <li>Transportar solo a través de empresas autorizadas por la Secretaría.</li>
+                        <li>Manejar separadamente los residuos incompatibles.</li>
+                        <li>Etiquetar envases con nombre, peligrosidad y fecha de ingreso.</li>
+                        <li>Transportar solo a través de empresas autorizadas.</li>
                     </ul>
-                    <p><strong>Almacenamiento:</strong> Debe realizarse en áreas seguras que cumplan con las condiciones de seguridad y plazos permitidos.</p>
+                `
+            },
+            'Bitacora': {
+                title: 'Bitácora de Residuos',
+                content: `
+                    <p><strong>¿Qué es?</strong> Registro obligatorio de cuánto material entra y cuánto sale del establecimiento.</p>
+                    <p><strong>Contenido:</strong> Debe incluir fecha, cantidad, tipo de material y nombre del transportista o destino final.</p>
+                    <p><strong>Conservación:</strong> El archivo debe guardarse por lo menos 5 años ante auditorías.</p>
+                `
+            },
+            'Seguridad': {
+                title: 'Seguridad Art. 82',
+                content: `
+                    <p><strong>Condiciones del sitio:</strong> El área de almacenamiento debe:</p>
+                    <ul class="list-disc ml-4 space-y-1">
+                        <li>Estar techada y delimitada de áreas de descanso.</li>
+                        <li>Tener señalización de protección civil (No fumar, Extintor).</li>
+                        <li>Contar con pasillos que permitan el movimiento de equipos de emergencia.</li>
+                    </ul>
                 `
             }
         };
