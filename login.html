@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeoArkana SCAD - Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <h1 class="text-2xl font-black text-slate-800">Iniciar sesión</h1>
+    <p class="text-slate-500 text-sm mt-1">Acceso al Sistema SCAD</p>
+
+    <form id="loginForm" class="mt-6 space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Correo</label>
+        <input id="email" type="email" required
+          class="w-full border border-slate-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-500" />
+      </div>
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
+        <input id="password" type="password" required
+          class="w-full border border-slate-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-500" />
+      </div>
+
+      <p id="errorMsg" class="text-sm text-red-600 hidden"></p>
+
+      <button type="submit"
+        class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl hover:bg-emerald-700 transition-all">
+        Entrar
+      </button>
+    </form>
+
+    <p class="text-xs text-slate-400 mt-5">
+      Demo: admin@scad.local / 123456
+    </p>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // Si ya hay sesión, redirige
+    const existing = window.SCADAUTH.getSession();
+    if (existing) {
+      const next = new URLSearchParams(location.search).get("next") || "index.html";
+      location.href = next;
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const result = window.SCADAUTH.login(email, password);
+      if (!result.ok) {
+        const error = document.getElementById("errorMsg");
+        error.textContent = result.message;
+        error.classList.remove("hidden");
+        return;
+      }
+
+      const next = new URLSearchParams(location.search).get("next") || "index.html";
+      location.href = next;
+    });
+  </script>
+</body>
+</html>

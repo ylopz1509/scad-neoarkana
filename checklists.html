@@ -3,98 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoArkana SCAD - Checklists</title>
+    <title>NeoArkana SCAD - Gestión de Cumplimiento</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/auth.js"></script>
+    <script>
+    window.SCADAUTH.requireAuth();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow-x: hidden; overflow-y: visible !important; }
+    </style>
 </head>
 <body class="bg-slate-50 font-sans">
 
-    <header class="bg-emerald-600 text-white py-12 px-6 shadow-lg">
+    <div id="infoModal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded-3xl shadow-2xl z-50 overflow-y-auto">
+            <div class="modal-content py-6 text-left px-8">
+                <div class="flex justify-between items-center pb-3 border-b">
+                    <p class="text-2xl font-black text-emerald-600 uppercase tracking-tighter" id="modalTitle"></p>
+                    <div class="modal-close cursor-pointer z-50" onclick="toggleModal()">
+                        <i class="fas fa-times text-slate-400 hover:text-red-500"></i>
+                    </div>
+                </div>
+                <div id="modalBody" class="mt-4 text-slate-600 text-sm leading-relaxed space-y-3">
+                    </div>
+                <div class="flex justify-end pt-6">
+                    <button onclick="toggleModal()" class="px-6 py-2 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 transition-all">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bg-white border-b border-slate-200 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div>
-                <a href="index.html" class="text-emerald-100 hover:text-white transition-all text-sm uppercase font-bold tracking-widest mb-2 block">
-                    <i class="fas fa-arrow-left mr-2"></i> Volver al Inicio
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-slate-400 hover:text-emerald-600 transition-colors">
+                    <i class="fas fa-arrow-left text-xl"></i>
                 </a>
-                <h1 class="text-4xl font-black tracking-tight uppercase">Checklists <span class="text-emerald-200">Legales</span></h1>
-                <p class="text-emerald-50 opacity-90">Evaluación de cumplimiento normativo (LGPGIR / NOMs)</p>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">Gestión de <span class="text-emerald-600">Checklists</span></h1>
             </div>
-            <div class="hidden md:block text-right">
-                <p class="text-xs uppercase font-bold text-emerald-200">Progreso General</p>
-                <div class="w-48 h-3 bg-emerald-800 rounded-full mt-2 overflow-hidden">
-                    <div class="bg-white h-full w-[65%]"></div>
-                </div>
-                <p class="text-sm mt-1 font-bold text-white">65% Completado</p>
-            </div>
+            <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold uppercase">Módulo Operativo</span>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-6xl mx-auto p-8 -mt-8 relative z-20">
+    <main class="max-w-6xl mx-auto p-6 md:p-8">
         
-        <div class="flex gap-4 mb-8 overflow-x-auto pb-2">
-            <button class="bg-emerald-600 text-white px-6 py-2 rounded-full shadow-md text-sm font-bold whitespace-nowrap">Todos</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Generación</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Almacenamiento</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Transporte</button>
+        <div class="mb-10">
+            <h2 class="text-3xl font-black text-slate-800 uppercase leading-none">Control Normativo</h2>
+            <p class="text-slate-500 mt-2">Haz clic en las etiquetas para consultar los detalles legales de cada uno de los requisitos.</p>
         </div>
 
-        <div class="space-y-6">
+        <div class="grid gap-4">
             
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-emerald-500 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-check"></i>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
+                        <div>
+                            <h3 class="font-bold text-slate-800">Inscripción al Padrón de Generadores</h3>
+                            <p class="text-sm text-slate-500">Obligación legal para el control y reporte de residuos.</p>
+                            <button onclick="showInfo('Art46')" class="mt-2 text-[10px] font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded uppercase hover:bg-blue-100 transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Ver: Art. 46 (RLGPGIR)
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Registro como Microgenerador</h3>
-                        <p class="text-slate-500 text-sm mt-1">Obligatorio según la LGPGIR para centros de acopio pequeños.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: LGPGIR Art. 46</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter">Cumplido</span>
-                    <button class="text-slate-400 hover:text-emerald-600 transition-colors p-2"><i class="fas fa-eye text-xl"></i></button>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-amber-500 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-exclamation"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Plan de Manejo de Residuos</h3>
-                        <p class="text-slate-500 text-sm mt-1">Documento que describe el manejo de residuos valorizables.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: NOM-161-SEMARNAT</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-amber-100 text-amber-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter">Pendiente</span>
-                    <button class="bg-amber-600 text-white px-6 py-2 rounded-2xl text-sm font-bold hover:bg-amber-700 shadow-lg shadow-amber-200 transition-all">Subir PDF</button>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-upload mr-2"></i>Subir tu Registro
+                    </button>
                 </div>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-slate-300 flex flex-col md:flex-row items-center justify-between gap-6 opacity-60">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-ban"></i>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
+                        <div>
+                            <h3 class="font-bold text-slate-800">Plan de Manejo de Residuos Especiales</h3>
+                            <p class="text-sm text-slate-500">Estrategia para el manejo de PET, llantas y electrónicos.</p>
+                            <button onclick="showInfo('NOM161')" class="mt-2 text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded uppercase hover:bg-emerald-100 transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Ver: NOM-161-SEMARNAT
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Bitácora de Residuos Peligrosos</h3>
-                        <p class="text-slate-500 text-sm mt-1">Solo requerido si manejas aceites, solventes o químicos.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: NOM-052-SEMARNAT</span>
-                    </div>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-upload mr-2"></i>Subir Plan
+                    </button>
                 </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-slate-100 text-slate-500 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter italic">No requerido</span>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
+                        <div>
+                            <h3 class="font-bold text-slate-800">Bitácora de Operación Mensual</h3>
+                            <p class="text-sm text-slate-500">Registro de volúmenes de acopio y comercialización.</p>
+                            <button onclick="showInfo('Bitacora')" class="mt-2 text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded uppercase hover:bg-indigo-100 transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Ver: Reg. LGPGIR Art. 40
+                            </button>
+                        </div>
+                    </div>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-file-invoice mr-2"></i>Subir PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 transition-all">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <input type="checkbox" class="w-6 h-6 mt-1 rounded border-slate-300 text-emerald-600">
+                        <div>
+                            <h3 class="font-bold text-slate-800">Condiciones de Almacenamiento</h3>
+                            <p class="text-sm text-slate-500">Infraestructura, señalización y seguridad en sitio.</p>
+                            <button onclick="showInfo('Seguridad')" class="mt-2 text-[10px] font-bold bg-amber-50 text-amber-600 px-2 py-0.5 rounded uppercase hover:bg-amber-100 transition-colors">
+                                <i class="fas fa-info-circle mr-1"></i> Ver: Reg. LGPGIR Art. 82
+                            </button>
+                        </div>
+                    </div>
+                    <button class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
+                        <i class="fas fa-camera mr-2"></i>Evidencia
+                    </button>
                 </div>
             </div>
 
         </div>
 
-        <footer class="mt-20 text-center text-slate-400 text-sm border-t pt-8 pb-10">
-            <p>Datos sincronizados con la base de datos <span class="text-emerald-600 font-mono font-bold">NeoArkana_Cloud</span></p>
+        <div class="fixed bottom-8 right-8">
+            <button class="bg-emerald-600 text-white px-8 py-4 rounded-full shadow-2xl hover:bg-emerald-700 hover:scale-105 transition-all font-bold flex items-center gap-3">
+                <i class="fas fa-save text-xl"></i> Guardar Cambios
+            </button>
         </div>
+
+        <footer class="mt-20 py-10 border-t border-slate-200 text-slate-400 text-xs text-center">
+            <p>NeoArkana SCAD - Módulo de Verificación Ambiental v1.0 Alpha</p>
+        </footer>
+
     </main>
 
+    <script>
+        // BASE DE DATOS LOCAL DE INFORMACIÓN LEGAL
+        const infoData = {
+            'NOM161': {
+                title: 'NOM-161-SEMARNAT',
+                content: `
+                    <p><strong>¿Qué es?</strong> Clasifica los Residuos de Manejo Especial (RME) como PET, llantas, pilas y electrónicos.</p>
+                    <p><strong>Obligación:</strong> Quienes generen más de 10 toneladas al año deben registrar un <strong>Plan de Manejo</strong> que detalle la separación, almacenamiento y disposición final.</p>
+                    <p><strong>Objetivo:</strong> Reducir y reciclar residuos industriales y comerciales, promoviendo la valorización.</p>
+                    <p class="text-xs bg-slate-50 p-2 rounded">La PROFEPA vigila que el centro de acopio tenga este registro vigente.</p>
+                `
+            },
+            'Art46': {
+                title: 'Artículo 46 (RLGPGIR)',
+                content: `
+                    <p><strong>¿Qué exige?</strong> Los generadores deben:</p>
+                    <ul class="list-disc ml-4 space-y-1">
+                        <li>Identificar y clasificar sus residuos.</li>
+                        <li>Manejar separadamente los residuos incompatibles.</li>
+                        <li>Etiquetar envases con nombre, peligrosidad y fecha de ingreso.</li>
+                        <li>Transportar solo a través de empresas autorizadas.</li>
+                    </ul>
+                `
+            },
+            'Bitacora': {
+                title: 'Bitácora de Residuos',
+                content: `
+                    <p><strong>¿Qué es?</strong> Registro obligatorio de cuánto material entra y cuánto sale del establecimiento.</p>
+                    <p><strong>Contenido:</strong> Debe incluir fecha, cantidad, tipo de material y nombre del transportista o destino final.</p>
+                    <p><strong>Conservación:</strong> El archivo debe guardarse por lo menos 5 años ante auditorías.</p>
+                `
+            },
+            'Seguridad': {
+                title: 'Seguridad Art. 82',
+                content: `
+                    <p><strong>Condiciones del sitio:</strong> El área de almacenamiento debe:</p>
+                    <ul class="list-disc ml-4 space-y-1">
+                        <li>Estar techada y delimitada de áreas de descanso.</li>
+                        <li>Tener señalización de protección civil (No fumar, Extintor).</li>
+                        <li>Contar con pasillos que permitan el movimiento de equipos de emergencia.</li>
+                    </ul>
+                `
+            }
+        };
+
+        function showInfo(norma) {
+            document.getElementById('modalTitle').innerText = infoData[norma].title;
+            document.getElementById('modalBody').innerHTML = infoData[norma].content;
+            toggleModal();
+        }
+
+        function toggleModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.toggle('opacity-0');
+            modal.classList.toggle('pointer-events-none');
+            document.body.classList.toggle('modal-active');
+        }
+    </script>
 </body>
 </html>
