@@ -5,58 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeoArkana SCAD - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <button id="authBtn"
+    class="fixed top-4 right-4 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700 transition-all z-50">
+    Sesión
+    </button>
+
+    <script src="js/auth.js"></script>
+    <script>
+    window.SCADAUTH.requireAuth();
+
+    const session = window.SCADAUTH.getSession();
+    const btn = document.getElementById("authBtn");
+
+    if (session) {
+        btn.textContent = "Cerrar sesión";
+        btn.onclick = () => window.SCADAUTH.logout();
+    } else {
+        btn.textContent = "Iniciar sesión";
+        btn.onclick = () => (location.href = "login.html");
+    }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
-<body class="bg-slate-50 font-sans text-gray-800">
-
-    <!-- SIDEBAR -->
-    <nav class="fixed top-0 left-0 h-full w-64 bg-green-800 text-white p-6 shadow-xl z-30">
-        <h1 class="text-2xl font-bold mb-10 text-green-200 tracking-wider">NEOARKANA</h1>
-
-        <ul class="space-y-4">
-            <li><a class="flex items-center space-x-3 p-2 rounded hover:bg-red-700"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
-            <li><a class="flex items-center space-x-3 p-2 rounded hover:bg-purple-700"><i class="fas fa-clipboard-check"></i><span>Checklists</span></a></li>
-            <li><a class="flex items-center space-x-3 p-2 rounded hover:bg-blue-700"><i class="fas fa-bell"></i><span>Alertas</span></a></li>
-            <li><a class="flex items-center space-x-3 p-2 rounded hover:bg-green-700"><i class="fas fa-folder-open"></i><span>Documentación</span></a></li>
-            <li><a class="flex items-center space-x-3 p-2 rounded hover:bg-green-700"><i class="fas fa-file-export"></i><span>Reportes</span></a></li>
-        </ul>
-
-        <div class="absolute bottom-10 left-6 text-sm text-green-300">
-            Equipo NeoArkana © 2026
+<body class="bg-slate-50 font-sans">
+    <header class="bg-green-900 text-white py-16 px-6 text-center shadow-2xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <i class="fas fa-leaf text-9xl absolute -left-10 -bottom-10 rotate-12"></i>
+            <i class="fas fa-recycle text-9xl absolute -right-10 -top-10 -rotate-12"></i>
         </div>
-    </nav>
-
-    <!-- HEADER -->
-    <header class="ml-64 bg-green-900 text-white py-16 px-6 text-center shadow-2xl relative">
-        <h1 class="text-5xl font-black uppercase">
-            NeoArkana <span class="text-green-400">SCAD</span>
-        </h1>
-        <p class="text-xl text-green-100 mt-4 max-w-2xl mx-auto">
-            Gestión Inteligente de Cumplimiento Ambiental para Microcomercios Recicladores
-        </p>
+        <div class="relative z-10">
+            <h1 class="text-5xl font-black tracking-tighter mb-3 uppercase">NeoArkana <span class="text-green-400">SCAD</span></h1>
+            <p class="text-xl text-green-100 font-light opacity-90 max-w-2xl mx-auto">Gestión Inteligente de Cumplimiento Ambiental para Microcomercios Recicladores</p>
+        </div>
     </header>
 
-    <!-- MAIN -->
-    <main class="ml-64 max-w-6xl mx-auto p-8">
+    <main class="max-w-6xl mx-auto p-8 -mt-12 relative z-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <a href="checklists.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+                <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                    <i class="fas fa-list-check text-3xl"></i>
+                </div>
+                <h2 class="font-bold text-xl text-slate-800">Checklists</h2>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Verifica el cumplimiento de normas LGPGIR y NOMs.</p>
+            </a>
 
-        <!-- CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            <!-- card -->
-            <!-- (tus cards van igual, aquí no las modifiqué) -->
+            <a href="documentos.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+                <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                    <i class="fas fa-file-shield text-3xl"></i>
+                </div>
+                <h2 class="font-bold text-xl text-slate-800">Documentos</h2>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Expediente digital de evidencias y permisos.</p>
+            </a>
+
+            <a href="alertas.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+                <div class="w-20 h-20 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
+                    <i class="fas fa-clock-rotate-left text-3xl"></i>
+                </div>
+                <h2 class="font-bold text-xl text-slate-800">Alertas</h2>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Monitoreo de vencimientos y plazos legales.</p>
+            </a>
+
+            <a href="reportes.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+                <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
+                    <i class="fas fa-print text-3xl"></i>
+                </div>
+                <h2 class="font-bold text-xl text-slate-800">Reportes</h2>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Generación de informes oficiales para autoridades.</p>
+            </a>
         </div>
 
-        <!-- CHECKLIST -->
-        <!-- (tu tabla va aquí, sin cambios) -->
-
-        <!-- REPORTE -->
-        <!-- (tu sección verde va aquí) -->
-
         <footer class="mt-20 text-center text-slate-400 text-sm border-t pt-8">
-            <p>Desarrollado por el equipo <strong>NeoArkana</strong></p>
-            <p>Versión 1.0 Alpha - 2026</p>
+            <p>Desarrollado por el equipo <span class="font-bold text-slate-600 italic">NeoArkana</span></p>
+            <p class="mt-1">Versión 1.0 Alpha - 2026</p>
         </footer>
-
     </main>
 </body>
 </html>
