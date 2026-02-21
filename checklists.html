@@ -1,119 +1,197 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoArkana SCAD - Gestión de Cumplimiento</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/auth.js"></script>
-    <script>
-        window.SCADAUTH.requireAuth();
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoArkana SCAD - Gestión de Cumplimiento</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/auth.js"></script>
+<script>
+    window.SCADAUTH.requireAuth();
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="bg-slate-50 font-sans">
 
-<nav class="bg-white border-b border-slate-200 px-6 py-4">
+<nav class="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
+        
         <h1 class="text-xl font-bold text-slate-800">
             Gestión de <span class="text-emerald-600">Checklists</span>
         </h1>
+
+        <!-- BOTÓN VOLVER -->
+        <a href="index.html"
+           class="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl shadow-sm hover:bg-emerald-700 transition">
+            <i class="fas fa-arrow-left"></i>
+            Inicio
+        </a>
+
     </div>
 </nav>
 
 <main class="max-w-6xl mx-auto p-6 md:p-8">
 
-    <h2 class="text-3xl font-black text-slate-800 mb-8">
-        Control Normativo
-    </h2>
+<h2 class="text-3xl font-black text-slate-800 mb-6">
+    Control Normativo
+</h2>
 
-    <div class="grid gap-4">
+<!--  PROGRESO -->
+<div class="bg-white border rounded-2xl p-6 mb-8 shadow-sm">
+    <h3 class="text-lg font-bold mb-2">
+        Cumplimiento Normativo:
+        <span id="progressText" class="text-emerald-600">0%</span>
+    </h3>
 
-        <!-- 1 -->
-        <div class="bg-white border rounded-2xl p-5">
-            <div class="flex items-center gap-4">
-                <input type="checkbox" data-id="inscripcion"
-                    class="w-6 h-6 text-emerald-600">
-                <h3 class="font-bold">Inscripción al Padrón de Generadores</h3>
-            </div>
+    <div class="w-full bg-slate-200 rounded-full h-4 mb-3">
+        <div id="progressBar"
+            class="bg-emerald-600 h-4 rounded-full transition-all duration-500"
+            style="width:0%">
         </div>
-
-        <!-- 2 -->
-        <div class="bg-white border rounded-2xl p-5">
-            <div class="flex items-center gap-4">
-                <input type="checkbox" data-id="plan"
-                    class="w-6 h-6 text-emerald-600">
-                <h3 class="font-bold">Plan de Manejo de Residuos Especiales</h3>
-            </div>
-        </div>
-
-        <!-- 3 -->
-        <div class="bg-white border rounded-2xl p-5">
-            <div class="flex items-center gap-4">
-                <input type="checkbox" data-id="bitacora"
-                    class="w-6 h-6 text-emerald-600">
-                <h3 class="font-bold">Bitácora de Operación Mensual</h3>
-            </div>
-        </div>
-
-        <!-- 4 -->
-        <div class="bg-white border rounded-2xl p-5">
-            <div class="flex items-center gap-4">
-                <input type="checkbox" data-id="almacenamiento"
-                    class="w-6 h-6 text-emerald-600">
-                <h3 class="font-bold">Condiciones de Almacenamiento</h3>
-            </div>
-        </div>
-
     </div>
+
+    <p id="completeMessage"
+       class="hidden text-green-600 font-bold text-lg animate-pulse">
+        Cumplimiento completo
+    </p>
+</div>
+
+<!-- CONTENEDOR DINÁMICO -->
+<div id="checklistContainer" class="grid gap-5"></div>
 
 </main>
 
 <script>
-    // ===== CHECKLIST POR USUARIO =====
+// =============================
+//  Sesión
+// =============================
+const session = window.SCADAUTH.getSession();
+if (!session) location.href = "login.html";
 
-    const session = window.SCADAUTH.getSession();
+const CHECKLIST_KEY = "scad_checklist_" + session.email;
 
-    // Seguridad extra
-    if (!session) {
-        location.href = "login.html";
+// =============================
+//  ESTRUCTURA DE DATOS
+// =============================
+const requisitos = [
+    {
+        id: "inscripcion",
+        nombre: "Inscripción al Padrón de Generadores",
+        descripcion: "Registro obligatorio ante autoridad ambiental para declarar generación de residuos valorizables."
+    },
+    {
+        id: "plan",
+        nombre: "Plan de Manejo de Residuos Especiales",
+        descripcion: "Documento que establece procedimientos para clasificación y disposición adecuada."
+    },
+    {
+        id: "bitacora",
+        nombre: "Bitácora de Operación Mensual",
+        descripcion: "Registro mensual de residuos recolectados y entregados."
+    },
+    {
+        id: "almacenamiento",
+        nombre: "Condiciones de Almacenamiento",
+        descripcion: "Área señalizada y protegida para evitar riesgos ambientales."
     }
+];
 
-    const CHECKLIST_KEY = "scad_checklist_" + session.email;
+// =============================
+//  RENDER DINÁMICO
+// =============================
+function renderChecklist() {
+    const container = document.getElementById("checklistContainer");
+    container.innerHTML = "";
 
-    function getChecklist() {
-        const raw = localStorage.getItem(CHECKLIST_KEY);
-        return raw ? JSON.parse(raw) : {};
+    requisitos.forEach(req => {
+        container.innerHTML += `
+        <div class="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+            <div class="flex items-start gap-4">
+                <input type="checkbox"
+                       data-id="${req.id}"
+                       class="w-6 h-6 mt-1 text-emerald-600">
+                <div>
+                    <h3 class="font-bold text-slate-800">
+                        ${req.nombre}
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">
+                        ${req.descripcion}
+                    </p>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+}
+
+// =============================
+//  Persistencia
+// =============================
+function getChecklist() {
+    const raw = localStorage.getItem(CHECKLIST_KEY);
+    return raw ? JSON.parse(raw) : {};
+}
+
+function saveChecklist(data) {
+    localStorage.setItem(CHECKLIST_KEY, JSON.stringify(data));
+}
+
+function loadChecklist() {
+    const data = getChecklist();
+    document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+        cb.checked = data[cb.dataset.id] || false;
+    });
+}
+
+// =============================
+//  Progreso
+// =============================
+function updateProgress() {
+    const checkboxes = document.querySelectorAll("input[type='checkbox']");
+    const total = checkboxes.length;
+    let completed = 0;
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) completed++;
+    });
+
+    const percentage = Math.round((completed / total) * 100);
+
+    document.getElementById("progressText").textContent = percentage + "%";
+    document.getElementById("progressBar").style.width = percentage + "%";
+
+    const message = document.getElementById("completeMessage");
+
+    if (percentage === 100) {
+        message.classList.remove("hidden");
+    } else {
+        message.classList.add("hidden");
     }
+}
 
-    function saveChecklist(data) {
-        localStorage.setItem(CHECKLIST_KEY, JSON.stringify(data));
-    }
-
-    function loadChecklist() {
-        const data = getChecklist();
-
-        document.querySelectorAll("input[type='checkbox']").forEach(cb => {
-            const id = cb.dataset.id;
-            if (data[id]) {
-                cb.checked = true;
-            }
+// =============================
+//  Eventos
+// =============================
+function setupChecklistEvents() {
+    document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+        cb.addEventListener("change", () => {
+            const data = getChecklist();
+            data[cb.dataset.id] = cb.checked;
+            saveChecklist(data);
+            updateProgress();
         });
-    }
+    });
+}
 
-    function setupChecklistEvents() {
-        document.querySelectorAll("input[type='checkbox']").forEach(cb => {
-            cb.addEventListener("change", () => {
-                const data = getChecklist();
-                data[cb.dataset.id] = cb.checked;
-                saveChecklist(data);
-            });
-        });
-    }
+// =============================
+//  Inicializar
+// =============================
+renderChecklist();
+loadChecklist();
+setupChecklistEvents();
+updateProgress();
 
-    loadChecklist();
-    setupChecklistEvents();
 </script>
 
 </body>
