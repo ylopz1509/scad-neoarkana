@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crear Cuenta - SCAD</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
+
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <h1 class="text-2xl font-black text-slate-800">Crear cuenta</h1>
+
+    <form id="registerForm" class="mt-6 space-y-4">
+
+      <input id="name" type="text" placeholder="Nombre del negocio"
+        required class="w-full border rounded-xl px-4 py-2"/>
+
+      <input id="email" type="email" placeholder="Correo"
+        required class="w-full border rounded-xl px-4 py-2"/>
+
+      <input id="password" type="password" placeholder="Contraseña"
+        required class="w-full border rounded-xl px-4 py-2"/>
+
+      <p id="errorMsg" class="text-sm text-red-600 hidden"></p>
+
+      <button type="submit"
+        class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl">
+        Registrarme
+      </button>
+    </form>
+
+    <p class="text-sm mt-4">
+      ¿Ya tienes cuenta?
+      <a href="login.html" class="text-emerald-600 font-bold">Inicia sesión</a>
+    </p>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const result = window.SCADAUTH.register(name, email, password);
+
+      if (!result.ok) {
+        const error = document.getElementById("errorMsg");
+        error.textContent = result.message;
+        error.classList.remove("hidden");
+        return;
+      }
+
+      alert("Cuenta creada correctamente");
+      location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
