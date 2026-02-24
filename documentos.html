@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>NeoArkana SCAD – Expediente Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- CSS del módulo -->
+  <link rel="stylesheet" href="css/documentos.css" />
+
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+
+<nav class="bg-white border-b px-6 py-4 flex justify-between items-center">
+  <h1 class="text-xl font-black text-slate-800">NeoArkana SCAD</h1>
+  <span class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">
+    Expediente Digital
+  </span>
+</nav>
+
+<main class="max-w-7xl mx-auto p-6">
+
+  <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800">Expediente Digital</h2>
+      <p class="text-sm text-gray-500">
+        Gestiona tus permisos y evidencias ante la autoridad.
+      </p>
+    </div>
+
+    <div class="mt-4 md:mt-0 flex space-x-3">
+      <select id="filtro-documentos"
+        class="bg-white border border-gray-300 py-2 px-4 rounded-lg">
+        <option value="todos">Todos</option>
+        <option value="legal">Legales</option>
+        <option value="operativo">Operativos</option>
+        <option value="fiscal">Fiscal</option>
+      </select>
+
+      <button id="btn-abrir-modal"
+        class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow flex items-center transition">
+        <i class="fas fa-cloud-upload-alt mr-2"></i> Subir nuevo
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Contenedor dinámico -->
+  <div id="contenedor-documentos"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  </div>
+
+</main>
+
+<!-- MODAL -->
+<div id="modal-subir"
+  class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+
+  <div class="bg-white rounded-xl shadow-xl w-11/12 md:w-1/2 p-6">
+
+    <div class="flex justify-between items-center mb-4 border-b pb-2">
+      <h3 class="text-xl font-bold">Subir nueva evidencia</h3>
+      <button id="btn-cerrar-modal" class="text-gray-400 text-2xl">&times;</button>
+    </div>
+
+    <form id="form-documento">
+
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2">
+          Tipo de documento
+        </label>
+        <select id="tipo-documento"
+          class="w-full border p-2 rounded">
+          <option value="">Selecciona…</option>
+          <option value="legal">Licencia / Permiso</option>
+          <option value="operativo">Manifiesto</option>
+          <option value="fiscal">Factura</option>
+        </select>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-bold mb-2">
+          Archivo
+        </label>
+        <input type="file" id="archivo"
+          class="w-full border p-2 rounded" />
+      </div>
+
+      <div class="flex justify-end space-x-3">
+        <button type="button" id="btn-cancelar"
+          class="px-4 py-2 text-gray-600">
+          Cancelar
+        </button>
+
+        <button type="submit"
+          class="px-4 py-2 bg-emerald-600 text-white rounded font-bold">
+          Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- JS del módulo -->
+<script src="js/documentos.js"></script>
+
+
+
+</body>
+</html>
