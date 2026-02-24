@@ -12,7 +12,7 @@
 
     <form id="registerForm" class="mt-6 space-y-4">
 
-      <input id="name" type="text" placeholder="Nombre del negocio"
+      <input id="empresa" type="text" placeholder="Nombre del negocio"
         required class="w-full border rounded-xl px-4 py-2"/>
 
       <input id="email" type="email" placeholder="Correo"
@@ -40,11 +40,11 @@
     document.getElementById("registerForm").addEventListener("submit", function(e){
       e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
+      const empresa = document.getElementById("empresa").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
-      const result = window.SCADAUTH.register(name, email, password);
+      const result = window.SCADAUTH.register(empresa, email, password);
 
       if (!result.ok) {
         const error = document.getElementById("errorMsg");

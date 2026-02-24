@@ -30,7 +30,8 @@
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
   }
 
-  function register(name, email, password) {
+  // REGISTRO
+  function register(empresa, email, password) {
     const users = getUsers();
 
     const exists = users.find(
@@ -42,9 +43,10 @@
     }
 
     users.push({
-      name,
-      email,
-      password,
+      id: crypto.randomUUID(),
+      empresa: empresa, // nombre del negocio
+      email: email,
+      password: password,
       role: "operador",
       createdAt: new Date().toISOString()
     });
@@ -53,6 +55,7 @@
     return { ok: true };
   }
 
+  // LOGIN
   function login(email, password) {
     const users = getUsers();
 
@@ -65,8 +68,9 @@
     if (!user) return { ok: false, message: "Credenciales inválidas" };
 
     setSession({
+      usuario_id: user.id,
       email: user.email,
-      name: user.name,
+      empresa: user.empresa,
       role: user.role,
       loginAt: new Date().toISOString()
     });
