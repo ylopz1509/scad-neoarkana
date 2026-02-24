@@ -1,6 +1,6 @@
-
 (function () {
   const SESSION_KEY = "scad_session";
+  const USERS_KEY = "scad_users";
 
   function getSession() {
     const raw = localStorage.getItem(SESSION_KEY);
@@ -20,23 +20,46 @@
     localStorage.removeItem(SESSION_KEY);
   }
 
-  function requireAuth() {
-    const session = getSession();
-    if (!session) {
-      const next = encodeURIComponent(location.pathname.split("/").pop() || "index.html");
-      location.href = `login.html?next=${next}`;
+  function getUsers() {
+    const raw = localStorage.getItem(USERS_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  }
+
+  function saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+
+  function register(name, email, password) {
+    const users = getUsers();
+
+    const exists = users.find(
+      (u) => u.email.toLowerCase() === email.toLowerCase()
+    );
+
+    if (exists) {
+      return { ok: false, message: "El correo ya está registrado" };
     }
+
+    users.push({
+      name,
+      email,
+      password,
+      role: "operador",
+      createdAt: new Date().toISOString()
+    });
+
+    saveUsers(users);
+    return { ok: true };
   }
 
   function login(email, password) {
-    // Demo local (NO seguro para producción)
-    const USERS = [
-      { email: "admin@scad.local", password: "123456", name: "Administrador", role: "admin" },
-      { email: "operador@scad.local", password: "123456", name: "Operador", role: "operador" }
-    ];
+    const users = getUsers();
 
-    const user = USERS.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+    const user = users.find(
+      (u) =>
+        u.email.toLowerCase() === email.toLowerCase() &&
+        u.password === password
     );
 
     if (!user) return { ok: false, message: "Credenciales inválidas" };
@@ -56,6 +79,21 @@
     location.href = "login.html";
   }
 
-  // Exponer funciones globales
-  window.SCADAUTH = { getSession, requireAuth, login, logout, clearSession };
+  function requireAuth() {
+    const session = getSession();
+    if (!session) {
+      const next = encodeURIComponent(
+        location.pathname.split("/").pop() || "index.html"
+      );
+      location.href = `login.html?next=${next}`;
+    }
+  }
+
+  window.SCADAUTH = {
+    getSession,
+    requireAuth,
+    login,
+    logout,
+    register
+  };
 })();
