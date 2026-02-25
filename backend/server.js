@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import axios from "axios";
 
 dotenv.config();
 
@@ -9,33 +9,46 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 app.post("/analizar-documento", async (req, res) => {
   try {
     const { nombreArchivo } = req.body;
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `
-      Analiza el siguiente nombre de documento: "${nombreArchivo}"
-      Clasifícalo y dame:
-      1. Tipo de documento
-      2. Posible descripción
-      3. Si parece vigente o no
-      Responde de forma corta, profesional y SIN usar asteriscos ni símbolos de formato Markdown (**).
-    `;
+Analiza el siguiente nombre de documento: "${nombreArchivo}"
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+Devuelve:
+Tipo:
+Descripción:
+Vigencia:
 
-    // LIMPIEZA TOTAL: Eliminamos asteriscos que la IA pueda colar por hábito
-    const textoLimpio = text.replace(/\*/g, '').trim();
+Respuesta corta y profesional.
+Sin asteriscos.
+`;
 
-    res.json({ resultado: textoLimpio });
+    const response = await axios.post(
+      "https://api.deepseek.com/v1/chat/completions",
+      {
+        model: "deepseek-chat",
+        messages: [
+          { role: "system", content: "Eres un analista documental profesional." },
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.3
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`
+        }
+      }
+    );
+
+    const texto = response.data.choices[0].message.content.trim();
+
+    res.json({ resultado: texto });
 
   } catch (error) {
-    console.error("Error en el servidor:", error);
+    console.error("Error DeepSeek:", error.response?.data || error.message);
     res.status(500).json({ error: "No se pudo procesar el análisis" });
   }
 });
