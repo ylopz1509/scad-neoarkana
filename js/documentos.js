@@ -1,211 +1,174 @@
-const modal = document.getElementById("modal-subir");
-const btnAbrir = document.getElementById("btn-abrir-modal");
-const btnCerrar = document.getElementById("btn-cerrar-modal");
-const btnCancelar = document.getElementById("btn-cancelar");
-const form = document.getElementById("form-documento");
-const contenedor = document.getElementById("contenedor-documentos");
-const filtro = document.getElementById("filtro-documentos");
+document.addEventListener('DOMContentLoaded', () => {
 
-let documentos = JSON.parse(localStorage.getItem("documentos")) || [];
+  const STORAGE_KEY = "documentosSCAD";
 
+  const btnAbrirModal = document.getElementById('btn-abrir-modal');
+  const btnCerrarModal = document.getElementById('btn-cerrar-modal');
+  const btnCancelar = document.getElementById('btn-cancelar');
+  const modalSubir = document.getElementById('modal-subir');
+  const form = document.getElementById('form-documento');
+  const btnSubmit = form.querySelector('button[type="submit"]');
+  const contenedor = document.getElementById("contenedor-documentos");
 
-// ============================
-// EXTRAER VIGENCIA
-// ============================
-function extraerTextoVigencia(analisisHTML) {
-  const textoPlano = analisisHTML
-    .replace(/<br>/g, "\n")
-    .replace(/<[^>]*>/g, "")
-    .trim();
+  let documentos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
-  const match = textoPlano.match(/Vigencia\s*:\s*(.+)/i);
+  renderizarDocumentos();
 
-  if (match && match[1]) {
-    return match[1].trim();
-  }
+  // ================================
+  // MODAL
+  // ================================
+  btnAbrirModal?.addEventListener('click', () => {
+    modalSubir.classList.remove('hidden');
+  });
 
-  return "Verificar manualmente por parte de SCAD";
-}
+  const cerrarModal = () => {
+    modalSubir.classList.add('hidden');
+    form.reset();
+  };
 
+  btnCerrarModal?.addEventListener('click', cerrarModal);
+  btnCancelar?.addEventListener('click', cerrarModal);
 
-// ============================
-// ANALIZAR DOCUMENTO (ENVÍA SOLO NOMBRE)
-// ============================
-async function analizarDocumento(nombreArchivo) {
-  try {
-    console.log("📤 Enviando nombre al backend:", nombreArchivo);
+  // ================================
+  // SUBMIT
+  // ================================
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    const response = await fetch("http://127.0.0.1:3000/analizar-documento", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ nombreArchivo })
-    });
-
-    if (!response.ok) {
-      throw new Error("Error en backend");
+    const archivo = document.getElementById('archivo')?.files[0];
+    if (!archivo) {
+      alert("Selecciona un PDF.");
+      return;
     }
 
-    const data = await response.json();
+    btnSubmit.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Analizando...`;
+    btnSubmit.disabled = true;
 
-    console.log("📥 RESPUESTA BACKEND:", data);
+    const formData = new FormData();
+    formData.append('archivo', archivo);
 
-    return data.resultado.replace(/\n/g, "<br>");
+    try {
 
-  } catch (error) {
+      const respuesta = await fetch("http://127.0.0.1:3000/analizar-documento", {
+        method: "POST",
+        body: formData
+      });
 
-    console.warn("⚠️ No hay conexión con IA, activando modo respaldo.");
+      const data = await respuesta.json();
 
-    return `
-      <strong>Tipo:</strong> Documento General<br>
-      <strong>Descripción:</strong> Documento pendiente de análisis automático.<br>
-      <strong>Vigencia:</strong> Verificar manualmente por parte de SCAD
-    `;
-  }
-}
+      const tipoMatch = data.resultado?.match(/Tipo:\s*(.*)/i);
+      const descripcionMatch = data.resultado?.match(/Descripción:\s*(.*)/i);
+      const vigenciaMatch = data.resultado?.match(/Vigencia:\s*(.*)/i);
 
+      const nuevoDocumento = {
+        id: Date.now(),
+        nombre: tipoMatch ? tipoMatch[1].trim() : "Documento",
+        descripcion: descripcionMatch ? descripcionMatch[1].trim() : "",
+        vigenciaTexto: vigenciaMatch ? vigenciaMatch[1].trim() : "",
+        fechaSubida: new Date().toISOString()
+      };
 
-// ============================
-// INICIALIZAR
-// ============================
-document.addEventListener("DOMContentLoaded", () => {
-  renderizarDocumentos();
-});
+      documentos.push(nuevoDocumento);
+      guardarEnLocalStorage();
+      renderizarDocumentos();
+      cerrarModal();
 
-btnAbrir.addEventListener("click", () => modal.classList.remove("hidden"));
-btnCerrar.addEventListener("click", cerrarModal);
-btnCancelar.addEventListener("click", cerrarModal);
+    } catch (error) {
+      alert("Error al conectar con el servidor.");
+    } finally {
+      btnSubmit.innerHTML = `<i class="fas fa-check"></i> Guardar Documento`;
+      btnSubmit.disabled = false;
+    }
+  });
 
-function cerrarModal() {
-  modal.classList.add("hidden");
-  form.reset();
-
-  const btnSubmit = form.querySelector('button[type="submit"]');
-  btnSubmit.disabled = false;
-  btnSubmit.textContent = "Guardar";
-}
-
-
-// ============================
-// SUBIR DOCUMENTO
-// ============================
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const tipoSeleccionado = document.getElementById("tipo-documento").value;
-  const archivoInput = document.getElementById("archivo");
-  const archivo = archivoInput.files[0];
-
-  if (!tipoSeleccionado || !archivo) {
-    alert("Por favor completa todos los campos.");
-    return;
+  // ================================
+  // GUARDAR
+  // ================================
+  function guardarEnLocalStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(documentos));
   }
 
-  const btnSubmit = form.querySelector('button[type="submit"]');
-  btnSubmit.textContent = "Analizando con IA...";
-  btnSubmit.disabled = true;
+  // ================================
+  // RENDERIZAR
+  // ================================
+  function renderizarDocumentos() {
 
-  try {
+    if (!contenedor) return;
 
-    // 🔥 SOLO ENVIAMOS EL NOMBRE
-    const analisis = await analizarDocumento(archivo.name);
-    const vigenciaTexto = extraerTextoVigencia(analisis);
+    contenedor.innerHTML = "";
 
-    const nuevoDocumento = {
-      id: Date.now(),
-      nombre: archivo.name,
-      tipo: tipoSeleccionado,
-      fecha: new Date().toLocaleDateString(),
-      tamaño: (archivo.size / 1024).toFixed(2) + " KB",
-      analisis: analisis,
-      vigenciaTexto: vigenciaTexto
-    };
-
-    documentos.push(nuevoDocumento);
-    localStorage.setItem("documentos", JSON.stringify(documentos));
-
-    renderizarDocumentos();
-    cerrarModal();
-
-  } catch (error) {
-    console.error(error);
-    alert("Error al procesar el documento.");
-  } finally {
-    btnSubmit.textContent = "Guardar";
-    btnSubmit.disabled = false;
-  }
-});
-
-
-// ============================
-// RENDER DOCUMENTOS
-// ============================
-function renderizarDocumentos() {
-  contenedor.innerHTML = "";
-
-  const filtroActual = filtro.value;
-
-  const docsFiltrados = documentos.filter(doc =>
-    filtroActual === "todos" || doc.tipo === filtroActual
-  );
-
-  if (docsFiltrados.length === 0) {
-    contenedor.innerHTML = `
-      <div class="col-span-3 text-center text-gray-400 py-10">
-        No hay documentos registrados.
-      </div>`;
-    return;
-  }
-
-  docsFiltrados.forEach(doc => {
-    contenedor.innerHTML += `
-      <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 hover:shadow-md transition">
-        
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="font-bold text-slate-800 text-lg truncate">
-            ${doc.nombre}
-          </h3>
-
-          <button onclick="eliminarDocumento(${doc.id})"
-            class="text-gray-400 hover:text-red-600 transition">
-            <i class="fas fa-trash"></i>
-          </button>
+    if (documentos.length === 0) {
+      contenedor.innerHTML = `
+        <div class="col-span-full text-center text-gray-400 py-20">
+          <i class="fas fa-folder-open text-4xl mb-3"></i>
+          <p>No hay documentos registrados.</p>
         </div>
+      `;
+      return;
+    }
 
-        <p class="text-xs text-gray-400 mb-3">
-          Subido: ${doc.fecha} | ${doc.tamaño}
-        </p>
+    documentos.forEach((doc, index) => {
 
-        <div class="flex justify-between items-center mb-4">
-          <span class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold">
-            ${doc.tipo.toUpperCase()}
+      const estado = verificarVigencia(doc.vigenciaTexto);
+
+      const card = document.createElement("div");
+      card.className = `
+        bg-white rounded-2xl shadow-md p-5 border
+        hover:shadow-xl transition-all duration-300
+      `;
+
+      card.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-lg text-slate-800">
+            ${doc.nombre || "Documento"}
+          </h3>
+          <span class="text-xs px-3 py-1 rounded-full font-semibold
+            ${estado === "Vigente" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}">
+            ${estado}
           </span>
         </div>
 
-        <p class="text-xs text-amber-600 font-semibold mb-3">
-          Vigencia: ${doc.vigenciaTexto}
+        <p class="text-sm text-gray-600 mb-4">
+          ${doc.descripcion || "Sin descripción"}
         </p>
 
-        <div class="mt-3 p-4 bg-slate-50 rounded-xl text-xs text-gray-700 leading-relaxed border-l-4 border-amber-500">
-          ${doc.analisis}
+        <div class="text-sm text-slate-700 font-medium mb-4">
+          📅 ${doc.vigenciaTexto || "No especificada"}
         </div>
 
-      </div>
-    `;
-  });
-}
+        <button onclick="eliminarDocumento(${index})"
+          class="text-red-500 hover:text-red-700 text-sm font-semibold">
+          Eliminar
+        </button>
+      `;
 
+      contenedor.appendChild(card);
+    });
+  }
 
-// ============================
-// ELIMINAR
-// ============================
-function eliminarDocumento(id) {
-  if (!confirm("¿Deseas eliminar este documento?")) return;
+  // ================================
+  // VERIFICAR VIGENCIA (BLINDADA)
+  // ================================
+  function verificarVigencia(vigenciaTexto) {
 
-  documentos = documentos.filter(doc => doc.id !== id);
-  localStorage.setItem("documentos", JSON.stringify(documentos));
-  renderizarDocumentos();
-}
+    if (!vigenciaTexto) return "Vigente";
 
-filtro.addEventListener("change", renderizarDocumentos);
+    const match = vigenciaTexto.match(/(\d{1,2}\/\d{1,2}\/\d{4})/);
+    if (!match) return "Vigente";
+
+    const [dia, mes, anio] = match[1].split("/");
+    const fecha = new Date(`${anio}-${mes}-${dia}`);
+
+    return fecha < new Date() ? "Vencido" : "Vigente";
+  }
+
+  // ================================
+  // ELIMINAR
+  // ================================
+  window.eliminarDocumento = function(index) {
+    documentos.splice(index, 1);
+    guardarEnLocalStorage();
+    renderizarDocumentos();
+  };
+
+});
