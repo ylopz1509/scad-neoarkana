@@ -26,8 +26,6 @@ async function analizarDocumento(nombreArchivo) {
     if (!response.ok) throw new Error("Backend offline");
 
     const data = await response.json();
-    
-    // Convertimos los saltos de línea de texto a saltos de línea HTML
     return data.resultado.replace(/\n/g, '<br>');
 
   } catch (error) {
@@ -56,7 +54,6 @@ function simularAnalisisLocal(nombre) {
     vigencia = "Verificar fecha de expiración.";
   }
 
-  // Usamos HTML puro en lugar de asteriscos
   return `<strong>[ANÁLISIS DE SISTEMA]</strong><br>
           <strong>Tipo:</strong> ${tipo}<br>
           <strong>Descripción:</strong> ${desc}<br>
@@ -64,12 +61,11 @@ function simularAnalisisLocal(nombre) {
 }
 
 // ============================
-// FUNCIONES DE INTERFAZ (UI)
+// FUNCIONES UI
 // ============================
 
 document.addEventListener("DOMContentLoaded", () => {
   renderizarDocumentos();
-  actualizarResumen();
 });
 
 btnAbrir.addEventListener("click", () => modal.classList.remove("hidden"));
@@ -79,11 +75,10 @@ btnCancelar.addEventListener("click", cerrarModal);
 function cerrarModal() {
   modal.classList.add("hidden");
   form.reset();
-  
-  // Resetear el botón siempre al cerrar
+
   const btnSubmit = form.querySelector('button[type="submit"]');
   btnSubmit.disabled = false;
-  btnSubmit.textContent = "Guardar Documento";
+  btnSubmit.textContent = "Guardar";
 }
 
 form.addEventListener("submit", async (e) => {
@@ -103,7 +98,7 @@ form.addEventListener("submit", async (e) => {
   btnSubmit.disabled = true;
 
   const reader = new FileReader();
-  
+
   reader.onload = async function () {
     try {
       const analisis = await analizarDocumento(archivo.name);
@@ -120,17 +115,15 @@ form.addEventListener("submit", async (e) => {
 
       documentos.push(nuevoDocumento);
       localStorage.setItem("documentos", JSON.stringify(documentos));
-      
+
       renderizarDocumentos();
-      actualizarResumen();
       cerrarModal();
 
     } catch (err) {
       console.error(err);
       alert("Error al procesar el documento.");
     } finally {
-      // Liberar botón pase lo que pase
-      btnSubmit.textContent = "Guardar Documento";
+      btnSubmit.textContent = "Guardar";
       btnSubmit.disabled = false;
     }
   };
@@ -147,7 +140,10 @@ function renderizarDocumentos() {
   );
 
   if (docsFiltrados.length === 0) {
-    contenedor.innerHTML = `<div class="col-span-3 text-center text-gray-400 py-10">No hay documentos registrados.</div>`;
+    contenedor.innerHTML =
+      `<div class="col-span-3 text-center text-gray-400 py-10">
+        No hay documentos registrados.
+      </div>`;
     return;
   }
 
@@ -165,7 +161,10 @@ function renderizarDocumentos() {
           <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-bold">
             ${doc.tipo.toUpperCase()}
           </span>
-          <a href="${doc.contenido}" target="_blank" class="text-blue-600 text-sm hover:underline font-medium">Ver archivo</a>
+          <a href="${doc.contenido}" target="_blank"
+            class="text-blue-600 text-sm hover:underline font-medium">
+            Ver archivo
+          </a>
         </div>
         <div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-700 leading-relaxed border-l-4 border-blue-500">
           ${doc.analisis}
@@ -177,16 +176,10 @@ function renderizarDocumentos() {
 
 function eliminarDocumento(id) {
   if (!confirm("¿Deseas eliminar este registro?")) return;
+
   documentos = documentos.filter(doc => doc.id !== id);
   localStorage.setItem("documentos", JSON.stringify(documentos));
   renderizarDocumentos();
-  actualizarResumen();
-}
-
-function actualizarResumen() {
-  document.getElementById("total-docs").textContent = documentos.length;
-  document.getElementById("total-legales").textContent = documentos.filter(d => d.tipo === "legal").length;
-  document.getElementById("total-operativos").textContent = documentos.filter(d => d.tipo === "operativo").length;
 }
 
 filtro.addEventListener("change", renderizarDocumentos);
