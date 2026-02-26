@@ -1,6 +1,3 @@
-// ============================
-// VARIABLES Y CONFIGURACIÓN
-// ============================
 const modal = document.getElementById("modal-subir");
 const btnAbrir = document.getElementById("btn-abrir-modal");
 const btnCerrar = document.getElementById("btn-cerrar-modal");
@@ -11,59 +8,67 @@ const filtro = document.getElementById("filtro-documentos");
 
 let documentos = JSON.parse(localStorage.getItem("documentos")) || [];
 
-// ============================
-// ANÁLISIS HÍBRIDO (IA + RESPALDO)
-// ============================
 
+// ============================
+// EXTRAER VIGENCIA
+// ============================
+function extraerTextoVigencia(analisisHTML) {
+  const textoPlano = analisisHTML
+    .replace(/<br>/g, "\n")
+    .replace(/<[^>]*>/g, "")
+    .trim();
+
+  const match = textoPlano.match(/Vigencia\s*:\s*(.+)/i);
+
+  if (match && match[1]) {
+    return match[1].trim();
+  }
+
+  return "Verificar manualmente por parte de SCAD";
+}
+
+
+// ============================
+// ANALIZAR DOCUMENTO (ENVÍA SOLO NOMBRE)
+// ============================
 async function analizarDocumento(nombreArchivo) {
   try {
-    const response = await fetch("http://localhost:3000/analizar-documento", {
+    console.log("📤 Enviando nombre al backend:", nombreArchivo);
+
+    const response = await fetch("http://127.0.0.1:3000/analizar-documento", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ nombreArchivo })
     });
 
-    if (!response.ok) throw new Error("Backend offline");
+    if (!response.ok) {
+      throw new Error("Error en backend");
+    }
 
     const data = await response.json();
-    return data.resultado.replace(/\n/g, '<br>');
+
+    console.log("📥 RESPUESTA BACKEND:", data);
+
+    return data.resultado.replace(/\n/g, "<br>");
 
   } catch (error) {
-    console.warn("⚠️ Activando simulación local por falla de conexión.");
-    return simularAnalisisLocal(nombreArchivo);
+
+    console.warn("⚠️ No hay conexión con IA, activando modo respaldo.");
+
+    return `
+      <strong>Tipo:</strong> Documento General<br>
+      <strong>Descripción:</strong> Documento pendiente de análisis automático.<br>
+      <strong>Vigencia:</strong> Verificar manualmente por parte de SCAD
+    `;
   }
 }
 
-function simularAnalisisLocal(nombre) {
-  const n = nombre.toLowerCase();
-  let tipo = "Documento General";
-  let desc = "Archivo registrado en el sistema de gestión SCAD.";
-  let vigencia = "Pendiente de validación manual.";
-
-  if (n.includes("factura") || n.includes("recibo") || n.includes("pago") || n.includes("xml")) {
-    tipo = "Comprobante Fiscal";
-    desc = "Documento financiero de ingresos/egresos.";
-    vigencia = "Sujeto a validación fiscal.";
-  } else if (n.includes("contrato") || n.includes("legal") || n.includes("convenio")) {
-    tipo = "Documento Legal";
-    desc = "Acuerdo formal o términos de servicio.";
-    vigencia = "Vigencia según cláusulas.";
-  } else if (n.includes("ine") || n.includes("id") || n.includes("cedula")) {
-    tipo = "Identificación Oficial";
-    desc = "Documento de identidad personal.";
-    vigencia = "Verificar fecha de expiración.";
-  }
-
-  return `<strong>[ANÁLISIS DE SISTEMA]</strong><br>
-          <strong>Tipo:</strong> ${tipo}<br>
-          <strong>Descripción:</strong> ${desc}<br>
-          <strong>Vigencia:</strong> ${vigencia}`;
-}
 
 // ============================
-// FUNCIONES UI
+// INICIALIZAR
 // ============================
-
 document.addEventListener("DOMContentLoaded", () => {
   renderizarDocumentos();
 });
@@ -81,58 +86,64 @@ function cerrarModal() {
   btnSubmit.textContent = "Guardar";
 }
 
+
+// ============================
+// SUBIR DOCUMENTO
+// ============================
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const tipo = document.getElementById("tipo-documento").value;
+  const tipoSeleccionado = document.getElementById("tipo-documento").value;
   const archivoInput = document.getElementById("archivo");
   const archivo = archivoInput.files[0];
 
-  if (!tipo || !archivo) {
-    alert("Por favor, completa los campos.");
+  if (!tipoSeleccionado || !archivo) {
+    alert("Por favor completa todos los campos.");
     return;
   }
 
   const btnSubmit = form.querySelector('button[type="submit"]');
-  btnSubmit.textContent = "Analizando...";
+  btnSubmit.textContent = "Analizando con IA...";
   btnSubmit.disabled = true;
 
-  const reader = new FileReader();
+  try {
 
-  reader.onload = async function () {
-    try {
-      const analisis = await analizarDocumento(archivo.name);
+    // 🔥 SOLO ENVIAMOS EL NOMBRE
+    const analisis = await analizarDocumento(archivo.name);
+    const vigenciaTexto = extraerTextoVigencia(analisis);
 
-      const nuevoDocumento = {
-        id: Date.now(),
-        nombre: archivo.name,
-        tipo: tipo,
-        fecha: new Date().toLocaleDateString(),
-        tamaño: (archivo.size / 1024).toFixed(2) + " KB",
-        contenido: reader.result,
-        analisis: analisis
-      };
+    const nuevoDocumento = {
+      id: Date.now(),
+      nombre: archivo.name,
+      tipo: tipoSeleccionado,
+      fecha: new Date().toLocaleDateString(),
+      tamaño: (archivo.size / 1024).toFixed(2) + " KB",
+      analisis: analisis,
+      vigenciaTexto: vigenciaTexto
+    };
 
-      documentos.push(nuevoDocumento);
-      localStorage.setItem("documentos", JSON.stringify(documentos));
+    documentos.push(nuevoDocumento);
+    localStorage.setItem("documentos", JSON.stringify(documentos));
 
-      renderizarDocumentos();
-      cerrarModal();
+    renderizarDocumentos();
+    cerrarModal();
 
-    } catch (err) {
-      console.error(err);
-      alert("Error al procesar el documento.");
-    } finally {
-      btnSubmit.textContent = "Guardar";
-      btnSubmit.disabled = false;
-    }
-  };
-
-  reader.readAsDataURL(archivo);
+  } catch (error) {
+    console.error(error);
+    alert("Error al procesar el documento.");
+  } finally {
+    btnSubmit.textContent = "Guardar";
+    btnSubmit.disabled = false;
+  }
 });
 
+
+// ============================
+// RENDER DOCUMENTOS
+// ============================
 function renderizarDocumentos() {
   contenedor.innerHTML = "";
+
   const filtroActual = filtro.value;
 
   const docsFiltrados = documentos.filter(doc =>
@@ -140,8 +151,8 @@ function renderizarDocumentos() {
   );
 
   if (docsFiltrados.length === 0) {
-    contenedor.innerHTML =
-      `<div class="col-span-3 text-center text-gray-400 py-10">
+    contenedor.innerHTML = `
+      <div class="col-span-3 text-center text-gray-400 py-10">
         No hay documentos registrados.
       </div>`;
     return;
@@ -149,33 +160,48 @@ function renderizarDocumentos() {
 
   docsFiltrados.forEach(doc => {
     contenedor.innerHTML += `
-      <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 hover:shadow-md transition duration-300">
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="font-bold text-gray-800 text-lg truncate">${doc.nombre}</h3>
-          <button onclick="eliminarDocumento(${doc.id})" class="text-gray-400 hover:text-red-600 transition">
+      <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 hover:shadow-md transition">
+        
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-slate-800 text-lg truncate">
+            ${doc.nombre}
+          </h3>
+
+          <button onclick="eliminarDocumento(${doc.id})"
+            class="text-gray-400 hover:text-red-600 transition">
             <i class="fas fa-trash"></i>
           </button>
         </div>
-        <p class="text-xs text-gray-400 mb-2">Subido: ${doc.fecha} | ${doc.tamaño}</p>
-        <div class="flex justify-between items-center">
-          <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-bold">
+
+        <p class="text-xs text-gray-400 mb-3">
+          Subido: ${doc.fecha} | ${doc.tamaño}
+        </p>
+
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-bold">
             ${doc.tipo.toUpperCase()}
           </span>
-          <a href="${doc.contenido}" target="_blank"
-            class="text-blue-600 text-sm hover:underline font-medium">
-            Ver archivo
-          </a>
         </div>
-        <div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-700 leading-relaxed border-l-4 border-blue-500">
+
+        <p class="text-xs text-amber-600 font-semibold mb-3">
+          Vigencia: ${doc.vigenciaTexto}
+        </p>
+
+        <div class="mt-3 p-4 bg-slate-50 rounded-xl text-xs text-gray-700 leading-relaxed border-l-4 border-amber-500">
           ${doc.analisis}
         </div>
+
       </div>
     `;
   });
 }
 
+
+// ============================
+// ELIMINAR
+// ============================
 function eliminarDocumento(id) {
-  if (!confirm("¿Deseas eliminar este registro?")) return;
+  if (!confirm("¿Deseas eliminar este documento?")) return;
 
   documentos = documentos.filter(doc => doc.id !== id);
   localStorage.setItem("documentos", JSON.stringify(documentos));

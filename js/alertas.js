@@ -1,82 +1,150 @@
-// Simulación de datos (En un caso real vendría de una API)
-const permisos = [
-    { nombre: "Permiso Ambiental Estatal", fechaVencimiento: "2026-03-10", area: "Ecología" },
-    { nombre: "Registro como Reciclador", fechaVencimiento: "2026-02-05", area: "Legal" },
-    { nombre: "Bitácora de Residuos", fechaVencimiento: "2025-12-20", area: "Operaciones" }
-];
-
 const DIAS_ALERTA = 30;
 const HOY = new Date();
 const contenedor = document.getElementById("contenedor-alertas");
 const sinAlertas = document.getElementById("sin-alertas");
 
+let documentos = JSON.parse(localStorage.getItem("documentos")) || [];
+
+// ============================
+// UTILIDADES
+// ============================
+
 function formatearFecha(fecha) {
-    return fecha.toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" });
+  return fecha.toLocaleDateString("es-MX", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
 }
 
-function crearAlerta(permiso, config, mensaje, dias) {
-    const alerta = document.createElement("div");
-    // Clases de Tailwind para un look moderno y corporativo
-    alerta.className = `bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row items-start md:items-center gap-6 border-l-[6px] ${config.border}`;
+function extraerFechaDesdeTexto(texto) {
+  if (!texto) return null;
 
-    alerta.innerHTML = `
-        <div class="${config.iconBg} p-4 rounded-xl text-2xl ${config.iconColor}">
-            <i class="fas ${config.icono}"></i>
-        </div>
-        
-        <div class="flex-grow">
-            <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-bold uppercase tracking-wider text-gray-400">${permiso.area}</span>
-                <span class="h-1 w-1 bg-gray-300 rounded-full"></span>
-                <span class="text-xs font-semibold ${config.textColor}">${mensaje}</span>
-            </div>
-            <h3 class="font-bold text-slate-800 text-xl">${permiso.nombre}</h3>
-            <p class="text-slate-500 text-sm flex items-center gap-2 mt-1">
-                <i class="far fa-calendar-alt"></i> Expira el ${formatearFecha(new Date(permiso.fechaVencimiento))}
-            </p>
-        </div>
+  const match = texto.match(/(\d{1,2}\/\d{1,2}\/\d{4})/);
+  if (!match) return null;
 
-        <div class="flex gap-2 w-full md:w-auto">
-            <button class="flex-1 md:flex-none px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-semibold text-sm transition-colors">
-                Detalles
-            </button>
-            <button class="flex-1 md:flex-none px-4 py-2 ${config.btnBg} text-white rounded-lg font-semibold text-sm transition-transform active:scale-95">
-                Renovar Ahora
-            </button>
-        </div>
-    `;
-
-    contenedor.appendChild(alerta);
+  const [dia, mes, anio] = match[1].split("/");
+  return new Date(`${anio}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`);
 }
 
-let hayAlertas = false;
+// ============================
+// CREAR ALERTA
+// ============================
 
-permisos.forEach(permiso => {
-    const fechaV = new Date(permiso.fechaVencimiento);
-    const diferenciaDias = Math.ceil((fechaV - HOY) / (1000 * 60 * 60 * 24));
+function crearAlerta(doc, estado, mensaje, colorConfig) {
 
-    if (diferenciaDias < 0) {
-        hayAlertas = true;
-        crearAlerta(permiso, {
-            border: "border-l-red-500",
-            iconBg: "bg-red-50",
-            iconColor: "text-red-600",
-            icon: "fa-circle-exclamation",
-            textColor: "text-red-600",
-            btnBg: "bg-red-600 hover:bg-red-700"
-        }, `Vencido hace ${Math.abs(diferenciaDias)} días`);
-    } 
-    else if (diferenciaDias <= DIAS_ALERTA) {
-        hayAlertas = true;
-        crearAlerta(permiso, {
-            border: "border-l-amber-500",
-            iconBg: "bg-amber-50",
-            iconColor: "text-amber-600",
-            icon: "fa-clock",
-            textColor: "text-amber-600",
-            btnBg: "bg-[#00a676] hover:bg-[#008f65]" // Verde corporativo para la acción
-        }, `Próximo a vencer (${diferenciaDias} días)`);
-    }
+  const alerta = document.createElement("div");
+
+  alerta.className = `
+    bg-white border border-slate-100 rounded-2xl p-6 shadow-sm 
+    hover:shadow-md transition flex items-center gap-6 
+    border-l-[6px] ${colorConfig.border}
+  `;
+
+  alerta.innerHTML = `
+    <div class="${colorConfig.iconBg} p-4 rounded-xl text-xl ${colorConfig.iconColor}">
+      <i class="fas ${colorConfig.icon}"></i>
+    </div>
+
+    <div class="flex-grow">
+      <h3 class="font-bold text-slate-800 text-lg">
+        ${doc.nombre}
+      </h3>
+
+      <p class="text-sm text-slate-500 mt-1">
+        Vigencia: ${doc.vigenciaTexto || "No especificada"}
+      </p>
+
+      <p class="text-xs font-semibold mt-2 ${colorConfig.textColor}">
+        ${mensaje}
+      </p>
+    </div>
+  `;
+
+  contenedor.appendChild(alerta);
+}
+
+// ============================
+// PROCESAR DOCUMENTOS
+// ============================
+
+let hayDocumentos = false;
+
+documentos.forEach(doc => {
+
+  if (!doc.vigenciaTexto) return;
+
+  hayDocumentos = true;
+
+  const fecha = extraerFechaDesdeTexto(doc.vigenciaTexto);
+
+  // 🔵 SIN FECHA VÁLIDA
+  if (!fecha) {
+    crearAlerta(doc, "informativo",
+      "Requiere validación manual (sin fecha detectada)",
+      {
+        border: "border-l-blue-500",
+        iconBg: "bg-blue-50",
+        iconColor: "text-blue-600",
+        icon: "fa-circle-info",
+        textColor: "text-blue-600"
+      }
+    );
+    return;
+  }
+
+  const diferenciaDias = Math.ceil(
+    (fecha - HOY) / (1000 * 60 * 60 * 24)
+  );
+
+  // 🔴 VENCIDO
+  if (diferenciaDias < 0) {
+    crearAlerta(doc, "vencido",
+      `Vencido hace ${Math.abs(diferenciaDias)} días`,
+      {
+        border: "border-l-red-500",
+        iconBg: "bg-red-50",
+        iconColor: "text-red-600",
+        icon: "fa-circle-exclamation",
+        textColor: "text-red-600"
+      }
+    );
+  }
+
+  // 🟡 PRÓXIMO A VENCER
+  else if (diferenciaDias <= DIAS_ALERTA) {
+    crearAlerta(doc, "proximo",
+      `Próximo a vencer (${diferenciaDias} días restantes)`,
+      {
+        border: "border-l-amber-500",
+        iconBg: "bg-amber-50",
+        iconColor: "text-amber-600",
+        icon: "fa-clock",
+        textColor: "text-amber-600"
+      }
+    );
+  }
+
+  // 🟢 VIGENTE
+  else {
+    crearAlerta(doc, "vigente",
+      `Vigente (faltan ${diferenciaDias} días)`,
+      {
+        border: "border-l-emerald-500",
+        iconBg: "bg-emerald-50",
+        iconColor: "text-emerald-600",
+        icon: "fa-check-circle",
+        textColor: "text-emerald-600"
+      }
+    );
+  }
+
 });
 
-if (!hayAlertas) sinAlertas.classList.remove("hidden");
+// ============================
+// SI NO HAY DOCUMENTOS CON VIGENCIA
+// ============================
+
+if (!hayDocumentos) {
+  sinAlertas.classList.remove("hidden");
+}
