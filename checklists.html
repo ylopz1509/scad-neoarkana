@@ -4,12 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NeoArkana SCAD - Gestión de Cumplimiento</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="js/auth.js"></script>
+
 <script>
     window.SCADAUTH.requireAuth();
 </script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body class="bg-slate-50 font-sans">
@@ -21,7 +25,6 @@
             Gestión de <span class="text-emerald-600">Checklists</span>
         </h1>
 
-        <!-- BOTÓN VOLVER -->
         <a href="index.html"
            class="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl shadow-sm hover:bg-emerald-700 transition">
             <i class="fas fa-arrow-left"></i>
@@ -33,11 +36,13 @@
 
 <main class="max-w-6xl mx-auto p-6 md:p-8">
 
-<h2 class="text-3xl font-black text-slate-800 mb-6">
+<!-- 🔥 TÍTULO CON ÍCONO AGREGADO -->
+<h2 class="text-3xl font-black text-slate-800 mb-6 flex items-center gap-3">
+    <i class="fas fa-list-check text-emerald-600"></i>
     Control Normativo
 </h2>
 
-<!--  PROGRESO -->
+<!-- PROGRESO -->
 <div class="bg-white border rounded-2xl p-6 mb-8 shadow-sm">
     <h3 class="text-lg font-bold mb-2">
         Cumplimiento Normativo:
@@ -63,17 +68,11 @@
 </main>
 
 <script>
-// =============================
-//  Sesión
-// =============================
 const session = window.SCADAUTH.getSession();
 if (!session) location.href = "login.html";
 
 const CHECKLIST_KEY = "scad_checklist_" + session.email;
 
-// =============================
-//  ESTRUCTURA DE DATOS
-// =============================
 const requisitos = [
     {
         id: "inscripcion",
@@ -97,9 +96,6 @@ const requisitos = [
     }
 ];
 
-// =============================
-//  RENDER DINÁMICO
-// =============================
 function renderChecklist() {
     const container = document.getElementById("checklistContainer");
     container.innerHTML = "";
@@ -125,9 +121,6 @@ function renderChecklist() {
     });
 }
 
-// =============================
-//  Persistencia
-// =============================
 function getChecklist() {
     const raw = localStorage.getItem(CHECKLIST_KEY);
     return raw ? JSON.parse(raw) : {};
@@ -144,9 +137,6 @@ function loadChecklist() {
     });
 }
 
-// =============================
-//  Progreso
-// =============================
 function updateProgress() {
     const checkboxes = document.querySelectorAll("input[type='checkbox']");
     const total = checkboxes.length;
@@ -170,9 +160,6 @@ function updateProgress() {
     }
 }
 
-// =============================
-//  Eventos
-// =============================
 function setupChecklistEvents() {
     document.querySelectorAll("input[type='checkbox']").forEach(cb => {
         cb.addEventListener("change", () => {
@@ -184,14 +171,10 @@ function setupChecklistEvents() {
     });
 }
 
-// =============================
-//  Inicializar
-// =============================
 renderChecklist();
 loadChecklist();
 setupChecklistEvents();
 updateProgress();
-
 </script>
 
 </body>

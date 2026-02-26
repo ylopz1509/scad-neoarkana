@@ -4,80 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeoArkana SCAD - Home</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <!-- Auth -->
+    <script src="js/auth.js"></script>
+</head>
+
+<body class="bg-slate-50 font-sans">
+
+    <!-- BOTÓN SESIÓN -->
     <button id="authBtn"
     class="fixed top-4 right-4 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700 transition-all z-50">
     Sesión
     </button>
 
-    <script src="js/auth.js"></script>
-    <script>
-    window.SCADAUTH.requireAuth();
-
-    const session = window.SCADAUTH.getSession();
-    const btn = document.getElementById("authBtn");
-
-    if (session) {
-        btn.textContent = "Cerrar sesión";
-        btn.onclick = () => window.SCADAUTH.logout();
-    } else {
-        btn.textContent = "Iniciar sesión";
-        btn.onclick = () => (location.href = "login.html");
-    }
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="bg-slate-50 font-sans">
+    <!-- HEADER -->
     <header class="bg-green-900 text-white py-16 px-6 text-center shadow-2xl relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <i class="fas fa-leaf text-9xl absolute -left-10 -bottom-10 rotate-12"></i>
             <i class="fas fa-recycle text-9xl absolute -right-10 -top-10 -rotate-12"></i>
         </div>
+
         <div class="relative z-10">
-            <h1 class="text-5xl font-black tracking-tighter mb-3 uppercase">NeoArkana <span class="text-green-400">SCAD</span></h1>
-            <p class="text-xl text-green-100 font-light opacity-90 max-w-2xl mx-auto">Gestión Inteligente de Cumplimiento Ambiental para Microcomercios Recicladores</p>
+            <h1 class="text-5xl font-black tracking-tighter mb-3 uppercase">
+                NeoArkana <span class="text-green-400">SCAD</span>
+            </h1>
+            <p class="text-xl text-green-100 font-light opacity-90 max-w-2xl mx-auto">
+                Gestión Inteligente de Cumplimiento Ambiental para Microcomercios Recicladores
+            </p>
         </div>
     </header>
 
+    <!-- MAIN -->
     <main class="max-w-6xl mx-auto p-8 -mt-12 relative z-20">
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <a href="checklists.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+
+            <!-- CHECKLIST -->
+            <a href="checklists.html"
+               class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+
                 <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
                     <i class="fas fa-list-check text-3xl"></i>
                 </div>
+
                 <h2 class="font-bold text-xl text-slate-800">Checklists</h2>
-                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Verifica el cumplimiento de normas LGPGIR y NOMs.</p>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">
+                    Verifica el cumplimiento de normas LGPGIR y NOMs.
+                </p>
             </a>
 
-            <a href="documentos.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+            <!-- DOCUMENTOS -->
+            <a href="documentos.html"
+               class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+
                 <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
-                    <i class="fas fa-file-shield text-3xl"></i>
+                    <i class="fas fa-folder-open text-3xl"></i>
                 </div>
+
                 <h2 class="font-bold text-xl text-slate-800">Documentos</h2>
-                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Expediente digital de evidencias y permisos.</p>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">
+                    Expediente digital de evidencias y permisos.
+                </p>
             </a>
 
-            <a href="alertas.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+            <!-- ALERTAS -->
+            <a href="alertas.html"
+               class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+
                 <div class="w-20 h-20 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300">
                     <i class="fas fa-clock-rotate-left text-3xl"></i>
                 </div>
+
                 <h2 class="font-bold text-xl text-slate-800">Alertas</h2>
-                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Monitoreo de vencimientos y plazos legales.</p>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">
+                    Monitoreo de vencimientos y plazos legales.
+                </p>
             </a>
 
-            <a href="reports.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+            <!-- REPORTES -->
+            <a href="reports.html"
+               class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+
                 <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
                     <i class="fas fa-print text-3xl"></i>
                 </div>
+
                 <h2 class="font-bold text-xl text-slate-800">Reportes</h2>
-                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Generación de informes oficiales para autoridades.</p>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">
+                    Generación de informes oficiales para autoridades.
+                </p>
             </a>
+
         </div>
 
+        <!-- FOOTER -->
         <footer class="mt-20 text-center text-slate-400 text-sm border-t pt-8">
-            <p>Desarrollado por el equipo <span class="font-bold text-slate-600 italic">NeoArkana</span></p>
+            <p>Desarrollado por el equipo
+                <span class="font-bold text-slate-600 italic">NeoArkana</span>
+            </p>
             <p class="mt-1">Versión 1.0 Alpha - 2026</p>
         </footer>
+
     </main>
+
+    <!-- SCRIPT DE SESIÓN (AL FINAL PARA EVITAR ERRORES) -->
+    <script>
+        window.SCADAUTH.requireAuth();
+
+        const session = window.SCADAUTH.getSession();
+        const btn = document.getElementById("authBtn");
+
+        if (session) {
+            btn.textContent = "Cerrar sesión";
+            btn.onclick = () => window.SCADAUTH.logout();
+        } else {
+            btn.textContent = "Iniciar sesión";
+            btn.onclick = () => (location.href = "login.html");
+        }
+    </script>
+
 </body>
 </html>
