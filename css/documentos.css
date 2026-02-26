@@ -1,4 +1,9 @@
-/* Animaciones del módulo documentos */
+/* =========================
+   NeoArkana SCAD - Documentos
+   Paleta alineada al Home
+========================= */
+
+/* Animaciones */
 
 .animate-fade-in-down {
   animation: fadeInDown 0.4s ease-out;
@@ -16,4 +21,61 @@
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tarjetas de documentos */
+
+.card-documento {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0; /* slate-200 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card-documento:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border-color: #10b981; /* emerald-500 */
+}
+
+/* Botones primarios */
+
+.btn-primary {
+  background-color: #059669; /* emerald-600 */
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #047857; /* emerald-700 */
+}
+
+/* Etiquetas tipo badge */
+
+.badge-documento {
+  background-color: #d1fae5; /* emerald-100 */
+  color: #065f46; /* emerald-800 */
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+/* Modal personalizado */
+
+.modal-header {
+  background-color: #064e3b; /* green-900 */
+  color: white;
+}
+
+.modal-accent-line {
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    #10b981,
+    #059669,
+    #047857
+  );
 }

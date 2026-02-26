@@ -109,7 +109,7 @@ form.addEventListener("submit", async (e) => {
         tipo: tipo,
         fecha: new Date().toLocaleDateString(),
         tamaño: (archivo.size / 1024).toFixed(2) + " KB",
-        contenido: reader.result,
+        contenido: reader.result, // se mantiene pero ya no se muestra
         analisis: analisis
       };
 
@@ -156,15 +156,13 @@ function renderizarDocumentos() {
             <i class="fas fa-trash"></i>
           </button>
         </div>
-        <p class="text-xs text-gray-400 mb-2">Subido: ${doc.fecha} | ${doc.tamaño}</p>
+        <p class="text-xs text-gray-400 mb-2">
+          Subido: ${doc.fecha} | ${doc.tamaño}
+        </p>
         <div class="flex justify-between items-center">
           <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-bold">
             ${doc.tipo.toUpperCase()}
           </span>
-          <a href="${doc.contenido}" target="_blank"
-            class="text-blue-600 text-sm hover:underline font-medium">
-            Ver archivo
-          </a>
         </div>
         <div class="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-700 leading-relaxed border-l-4 border-blue-500">
           ${doc.analisis}
