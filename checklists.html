@@ -1,100 +1,198 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoArkana SCAD - Checklists</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoArkana SCAD - Gestión de Cumplimiento</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/auth.js"></script>
+<script>
+    window.SCADAUTH.requireAuth();
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="bg-slate-50 font-sans">
 
-    <header class="bg-emerald-600 text-white py-12 px-6 shadow-lg">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div>
-                <a href="index.html" class="text-emerald-100 hover:text-white transition-all text-sm uppercase font-bold tracking-widest mb-2 block">
-                    <i class="fas fa-arrow-left mr-2"></i> Volver al Inicio
-                </a>
-                <h1 class="text-4xl font-black tracking-tight uppercase">Checklists <span class="text-emerald-200">Legales</span></h1>
-                <p class="text-emerald-50 opacity-90">Evaluación de cumplimiento normativo (LGPGIR / NOMs)</p>
-            </div>
-            <div class="hidden md:block text-right">
-                <p class="text-xs uppercase font-bold text-emerald-200">Progreso General</p>
-                <div class="w-48 h-3 bg-emerald-800 rounded-full mt-2 overflow-hidden">
-                    <div class="bg-white h-full w-[65%]"></div>
-                </div>
-                <p class="text-sm mt-1 font-bold text-white">65% Completado</p>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto p-8 -mt-8 relative z-20">
+<nav class="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
         
-        <div class="flex gap-4 mb-8 overflow-x-auto pb-2">
-            <button class="bg-emerald-600 text-white px-6 py-2 rounded-full shadow-md text-sm font-bold whitespace-nowrap">Todos</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Generación</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Almacenamiento</button>
-            <button class="bg-white text-slate-600 px-6 py-2 rounded-full shadow-sm text-sm font-medium border border-slate-200 whitespace-nowrap hover:bg-slate-50">Transporte</button>
-        </div>
+        <h1 class="text-xl font-bold text-slate-800">
+            Gestión de <span class="text-emerald-600">Checklists</span>
+        </h1>
 
-        <div class="space-y-6">
-            
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-emerald-500 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Registro como Microgenerador</h3>
-                        <p class="text-slate-500 text-sm mt-1">Obligatorio según la LGPGIR para centros de acopio pequeños.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: LGPGIR Art. 46</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter">Cumplido</span>
-                    <button class="text-slate-400 hover:text-emerald-600 transition-colors p-2"><i class="fas fa-eye text-xl"></i></button>
+        <!-- BOTÓN VOLVER -->
+        <a href="index.html"
+           class="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl shadow-sm hover:bg-emerald-700 transition">
+            <i class="fas fa-arrow-left"></i>
+            Inicio
+        </a>
+
+    </div>
+</nav>
+
+<main class="max-w-6xl mx-auto p-6 md:p-8">
+
+<h2 class="text-3xl font-black text-slate-800 mb-6">
+    Control Normativo
+</h2>
+
+<!--  PROGRESO -->
+<div class="bg-white border rounded-2xl p-6 mb-8 shadow-sm">
+    <h3 class="text-lg font-bold mb-2">
+        Cumplimiento Normativo:
+        <span id="progressText" class="text-emerald-600">0%</span>
+    </h3>
+
+    <div class="w-full bg-slate-200 rounded-full h-4 mb-3">
+        <div id="progressBar"
+            class="bg-emerald-600 h-4 rounded-full transition-all duration-500"
+            style="width:0%">
+        </div>
+    </div>
+
+    <p id="completeMessage"
+       class="hidden text-green-600 font-bold text-lg animate-pulse">
+        Cumplimiento completo
+    </p>
+</div>
+
+<!-- CONTENEDOR DINÁMICO -->
+<div id="checklistContainer" class="grid gap-5"></div>
+
+</main>
+
+<script>
+// =============================
+//  Sesión
+// =============================
+const session = window.SCADAUTH.getSession();
+if (!session) location.href = "login.html";
+
+const CHECKLIST_KEY = "scad_checklist_" + session.email;
+
+// =============================
+//  ESTRUCTURA DE DATOS
+// =============================
+const requisitos = [
+    {
+        id: "inscripcion",
+        nombre: "Inscripción al Padrón de Generadores",
+        descripcion: "Registro obligatorio ante autoridad ambiental para declarar generación de residuos valorizables."
+    },
+    {
+        id: "plan",
+        nombre: "Plan de Manejo de Residuos Especiales",
+        descripcion: "Documento que establece procedimientos para clasificación y disposición adecuada."
+    },
+    {
+        id: "bitacora",
+        nombre: "Bitácora de Operación Mensual",
+        descripcion: "Registro mensual de residuos recolectados y entregados."
+    },
+    {
+        id: "almacenamiento",
+        nombre: "Condiciones de Almacenamiento",
+        descripcion: "Área señalizada y protegida para evitar riesgos ambientales."
+    }
+];
+
+// =============================
+//  RENDER DINÁMICO
+// =============================
+function renderChecklist() {
+    const container = document.getElementById("checklistContainer");
+    container.innerHTML = "";
+
+    requisitos.forEach(req => {
+        container.innerHTML += `
+        <div class="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+            <div class="flex items-start gap-4">
+                <input type="checkbox"
+                       data-id="${req.id}"
+                       class="w-6 h-6 mt-1 text-emerald-600">
+                <div>
+                    <h3 class="font-bold text-slate-800">
+                        ${req.nombre}
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1">
+                        ${req.descripcion}
+                    </p>
                 </div>
             </div>
-
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-amber-500 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-exclamation"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Plan de Manejo de Residuos</h3>
-                        <p class="text-slate-500 text-sm mt-1">Documento que describe el manejo de residuos valorizables.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: NOM-161-SEMARNAT</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-amber-100 text-amber-700 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter">Pendiente</span>
-                    <button class="bg-amber-600 text-white px-6 py-2 rounded-2xl text-sm font-bold hover:bg-amber-700 shadow-lg shadow-amber-200 transition-all">Subir PDF</button>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-3xl p-6 shadow-sm border-l-8 border-slate-300 flex flex-col md:flex-row items-center justify-between gap-6 opacity-60">
-                <div class="flex items-center gap-6">
-                    <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-ban"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg leading-tight">Bitácora de Residuos Peligrosos</h3>
-                        <p class="text-slate-500 text-sm mt-1">Solo requerido si manejas aceites, solventes o químicos.</p>
-                        <span class="inline-block mt-2 text-[10px] font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">Norma: NOM-052-SEMARNAT</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <span class="bg-slate-100 text-slate-500 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter italic">No requerido</span>
-                </div>
-            </div>
-
         </div>
+        `;
+    });
+}
 
-        <footer class="mt-20 text-center text-slate-400 text-sm border-t pt-8 pb-10">
-            <p>Datos sincronizados con la base de datos <span class="text-emerald-600 font-mono font-bold">NeoArkana_Cloud</span></p>
-        </div>
-    </main>
+// =============================
+//  Persistencia
+// =============================
+function getChecklist() {
+    const raw = localStorage.getItem(CHECKLIST_KEY);
+    return raw ? JSON.parse(raw) : {};
+}
+
+function saveChecklist(data) {
+    localStorage.setItem(CHECKLIST_KEY, JSON.stringify(data));
+}
+
+function loadChecklist() {
+    const data = getChecklist();
+    document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+        cb.checked = data[cb.dataset.id] || false;
+    });
+}
+
+// =============================
+//  Progreso
+// =============================
+function updateProgress() {
+    const checkboxes = document.querySelectorAll("input[type='checkbox']");
+    const total = checkboxes.length;
+    let completed = 0;
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) completed++;
+    });
+
+    const percentage = Math.round((completed / total) * 100);
+
+    document.getElementById("progressText").textContent = percentage + "%";
+    document.getElementById("progressBar").style.width = percentage + "%";
+
+    const message = document.getElementById("completeMessage");
+
+    if (percentage === 100) {
+        message.classList.remove("hidden");
+    } else {
+        message.classList.add("hidden");
+    }
+}
+
+// =============================
+//  Eventos
+// =============================
+function setupChecklistEvents() {
+    document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+        cb.addEventListener("change", () => {
+            const data = getChecklist();
+            data[cb.dataset.id] = cb.checked;
+            saveChecklist(data);
+            updateProgress();
+        });
+    });
+}
+
+// =============================
+//  Inicializar
+// =============================
+renderChecklist();
+loadChecklist();
+setupChecklistEvents();
+updateProgress();
+
+</script>
 
 </body>
 </html>

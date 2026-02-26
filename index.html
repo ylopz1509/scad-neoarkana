@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeoArkana SCAD - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <button id="authBtn"
+    class="fixed top-4 right-4 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700 transition-all z-50">
+    Sesión
+    </button>
+
+    <script src="js/auth.js"></script>
+    <script>
+    window.SCADAUTH.requireAuth();
+
+    const session = window.SCADAUTH.getSession();
+    const btn = document.getElementById("authBtn");
+
+    if (session) {
+        btn.textContent = "Cerrar sesión";
+        btn.onclick = () => window.SCADAUTH.logout();
+    } else {
+        btn.textContent = "Iniciar sesión";
+        btn.onclick = () => (location.href = "login.html");
+    }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 font-sans">
@@ -34,7 +54,7 @@
                     <i class="fas fa-file-shield text-3xl"></i>
                 </div>
                 <h2 class="font-bold text-xl text-slate-800">Documentos</h2>
-                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Expediente digital de permisos y evidencias.</p>
+                <p class="text-slate-500 text-sm mt-3 leading-relaxed">Expediente digital de evidencias y permisos.</p>
             </a>
 
             <a href="alertas.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
@@ -45,7 +65,7 @@
                 <p class="text-slate-500 text-sm mt-3 leading-relaxed">Monitoreo de vencimientos y plazos legales.</p>
             </a>
 
-            <a href="reportes.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
+            <a href="reports.html" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all group border border-slate-100">
                 <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
                     <i class="fas fa-print text-3xl"></i>
                 </div>
